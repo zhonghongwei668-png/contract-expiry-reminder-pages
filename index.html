@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="referrer" content="no-referrer" />
+    <title>续约灯塔 · 合同到期提醒</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23d5262b'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-size='34' fill='white'%3E%E7%BB%AD%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <main id="access-view" class="access-page">
+      <section class="access-card" aria-labelledby="access-title">
+        <div class="brand">
+          <span aria-hidden="true">续</span>
+          <div>
+            <strong>续约灯塔</strong>
+            <small>合同到期提醒</small>
+          </div>
+        </div>
+        <p class="eyebrow">PRIVATE ACCESS</p>
+        <h1 id="access-title">合同网页已锁定</h1>
+        <p class="access-copy">
+          输入独立访问密码后，合同数据只在当前浏览器中解密。
+        </p>
+        <form id="unlock-form" class="access-form">
+          <label>
+            <span>访问密码</span>
+            <input
+              id="access-password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              minlength="12"
+              maxlength="128"
+              required
+            />
+          </label>
+          <p id="access-error" class="access-error" aria-live="polite">&nbsp;</p>
+          <button id="unlock-button" type="submit">解锁合同网页</button>
+        </form>
+        <p class="security-note">
+          加密数据采用 PBKDF2-SHA-256 与 AES-GCM；密码不会上传到网页服务器。
+        </p>
+      </section>
+    </main>
+
+    <main id="dashboard-view" class="dashboard" hidden>
+      <header class="topbar">
+        <div class="brand brand--compact">
+          <span aria-hidden="true">续</span>
+          <div>
+            <strong>续约灯塔</strong>
+            <small>合同到期提醒</small>
+          </div>
+        </div>
+        <button id="lock-button" class="lock-button" type="button">
+          锁定网页
+        </button>
+      </header>
+
+      <section class="hero">
+        <div>
+          <p class="eyebrow">CONTRACT EXPIRY WATCH</p>
+          <h1>合同到期预警中心</h1>
+          <p id="document-title" class="hero-copy"></p>
+        </div>
+        <div class="sync-card">
+          <span>数据检查日期</span>
+          <strong id="checked-on">—</strong>
+          <small id="generated-at">—</small>
+        </div>
+      </section>
+
+      <section class="summary-grid" aria-label="到期摘要">
+        <article>
+          <span>未来 20 天</span>
+          <strong id="summary-total">0</strong>
+          <small>份合同</small>
+        </article>
+        <article>
+          <span>今天到期</span>
+          <strong id="summary-today">0</strong>
+          <small>需立即关注</small>
+        </article>
+        <article>
+          <span>7 天内到期</span>
+          <strong id="summary-seven">0</strong>
+          <small>优先核对</small>
+        </article>
+        <article>
+          <span>全部合同</span>
+          <strong id="summary-all">0</strong>
+          <small>按到期日排序</small>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">DUE SOON</p>
+            <h2>即将到期合同</h2>
+          </div>
+          <span>仅显示“未到期 / 马上到期”且剩余 0–20 天</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>合同编号</th>
+                <th>合作方</th>
+                <th>合同名称</th>
+                <th>到期日期</th>
+                <th>剩余天数</th>
+                <th>状态</th>
+              </tr>
+            </thead>
+            <tbody id="due-contracts-body"></tbody>
+          </table>
+          <p id="due-empty" class="empty-state" hidden>
+            未来 20 天没有符合提醒条件的合同。
+          </p>
+        </div>
+      </section>
+
+      <section class="panel" id="all-contracts">
+        <div class="section-heading section-heading--filters">
+          <div>
+            <p class="eyebrow">FULL INVENTORY</p>
+            <h2>全部合同总览</h2>
+          </div>
+          <div class="filters">
+            <label>
+              <span>状态</span>
+              <select id="status-filter">
+                <option value="">未筛选</option>
+                <option value="未到期">未到期</option>
+                <option value="马上到期">马上到期</option>
+                <option value="已到期">已到期</option>
+              </select>
+            </label>
+            <label>
+              <span>搜索</span>
+              <input
+                id="contract-search"
+                type="search"
+                placeholder="合同编号、合作方或名称"
+              />
+            </label>
+          </div>
+        </div>
+        <p id="inventory-count" class="inventory-count"></p>
+        <div class="table-wrap table-wrap--tall">
+          <table>
+            <thead>
+              <tr>
+                <th>合同编号</th>
+                <th>合作方</th>
+                <th>合同名称</th>
+                <th>到期日期</th>
+                <th>剩余天数</th>
+                <th>状态</th>
+              </tr>
+            </thead>
+            <tbody id="all-contracts-body"></tbody>
+          </table>
+          <p id="all-empty" class="empty-state" hidden>没有匹配的合同。</p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
